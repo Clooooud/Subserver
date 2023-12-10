@@ -18,8 +18,8 @@ public class CreateSubCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command rootCommand, String label, String[] args) {
-        if(!(args[1].isEmpty())) {
-            WorldCreator creator = new WorldCreator(args[1]);
+        if(!(args[0].isEmpty())) {
+            WorldCreator creator = new WorldCreator(args[0]);
             creator.environment(World.Environment.NORMAL);
             creator.generateStructures(true);
             creator.createWorld();

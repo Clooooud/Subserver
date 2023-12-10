@@ -17,8 +17,8 @@ public class LoadSubCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command rootCommand, String label, String[] args) {
-        if(!(args[1].isEmpty())) {
-            WorldCreator creator = new WorldCreator(args[1]);
+        if(!(args[0].isEmpty())) {
+            WorldCreator creator = new WorldCreator(args[0]);
             creator.createWorld();
             sender.sendMessage("Monde chargé.");
             return true;
