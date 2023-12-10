@@ -1,0 +1,10 @@
+name: SubServer
+version: '${project.version}'
+main: fr.loanspac.subserver.SubServer
+api-version: '1.18'
+authors: [ LoanSpac ]
+commands:
+  aworld:
+
+  worldtp:
+
