@@ -1,25 +1,27 @@
 package fr.loanspac.subserver;
 
-import fr.loanspac.subserver.managers.CommandManager;
-import fr.loanspac.subserver.managers.ListenerManager;
+import fr.loanspac.subserver.commands.SubServerCommand;
+import fr.loanspac.subserver.listeners.WorldInitListener;
 import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class SubServer extends JavaPlugin {
-    private static SubServer INSTANCE;
+
+    private List<Listener> listeners = new ArrayList<>();
 
     @Override
     public void onEnable() {
-        INSTANCE = this;
         Bukkit.getLogger().info("===========================");
         Bukkit.getLogger().info("Enable SubServer 1.0");
         Bukkit.getLogger().info("===========================");
 
-        ListenerManager listeners = new ListenerManager();
-        listeners.registerEvents();
-
-        CommandManager commands = new CommandManager();
-        commands.setCommand();
+        this.listeners.add(new WorldInitListener());
+        registerListeners();
+        registerCommands();
     }
 
     @Override
@@ -29,7 +31,11 @@ public final class SubServer extends JavaPlugin {
         Bukkit.getLogger().info("===========================");
     }
 
-    public static SubServer instance() {
-        return INSTANCE;
+    public void registerCommands(){
+        this.getCommand("subserver").setExecutor(new SubServerCommand(this));
+    }
+
+    public void registerListeners(){
+        this.listeners.forEach(listener -> Bukkit.getPluginManager().registerEvents(listener, this));
     }
 }

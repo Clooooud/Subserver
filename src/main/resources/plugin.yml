@@ -2,9 +2,8 @@ name: SubServer
 version: '${project.version}'
 main: fr.loanspac.subserver.SubServer
 api-version: '1.18'
-authors: [ LoanSpac ]
+authors: [ LoanSpac, Clooooud ]
 commands:
-  aworld:
-
-  worldtp:
+  subserver:
+    description: "SubServer's main command"
 
