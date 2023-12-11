@@ -4,6 +4,7 @@ import fr.loanspac.subserver.SubServer;
 import fr.loanspac.subserver.commands.subs.CreateSubCommand;
 import fr.loanspac.subserver.commands.subs.LoadSubCommand;
 import fr.loanspac.subserver.commands.subs.TpSubCommand;
+import fr.loanspac.subserver.commands.subs.UnloadSubCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -14,6 +15,7 @@ public class SubServerCommand extends AbstractCommand {
         this.registerSubCommand("create", new CreateSubCommand(plugin));
         this.registerSubCommand("tp", new TpSubCommand(plugin));
         this.registerSubCommand("load", new LoadSubCommand(plugin));
+        this.registerSubCommand("unload", new UnloadSubCommand(plugin));
     }
 
     @Override

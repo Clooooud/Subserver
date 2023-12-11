@@ -2,6 +2,7 @@ package fr.loanspac.subserver.commands.subs;
 
 import fr.loanspac.subserver.SubServer;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -11,18 +12,15 @@ import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class LoadSubCommand implements TabExecutor {
+public class UnloadSubCommand implements TabExecutor {
 
     private final SubServer plugin;
 
     @Override
     public boolean onCommand(CommandSender sender, Command rootCommand, String label, String[] args) {
-        long startTime = System.currentTimeMillis();
         if(!(args[0].isEmpty())) {
-            WorldCreator creator = new WorldCreator(args[0]);
-            creator.createWorld();
-            long totalTime = System.currentTimeMillis() - startTime;
-            sender.sendMessage("Monde chargé en " + totalTime + "ms ou " + ((float) totalTime / 50f) + " ticks .");
+            Bukkit.unloadWorld(args[0], false);
+            sender.sendMessage("Monde déchargé.");
             return true;
         }
         sender.sendMessage("§cVous devez préciser un nom de monde.");
