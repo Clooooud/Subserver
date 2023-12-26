@@ -1,4 +1,4 @@
-package fr.loanspac.subserver.listeners;
+package com.stackmc.subserver.listeners;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

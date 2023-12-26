@@ -1,7 +1,7 @@
-package fr.loanspac.subserver;
+package com.stackmc.subserver;
 
-import fr.loanspac.subserver.commands.SubServerCommand;
-import fr.loanspac.subserver.listeners.WorldInitListener;
+import com.stackmc.subserver.commands.SubServerCommand;
+import com.stackmc.subserver.listeners.WorldInitListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;

@@ -1,9 +1,9 @@
 name: SubServer
 version: '${project.version}'
-main: fr.loanspac.subserver.SubServer
-api-version: '1.18'
+main: com.stackmc.subserver.SubServer
+api-version: '1.12.2'
+depend: [SlimeWorldManager]
 authors: [ LoanSpac, Clooooud ]
 commands:
   subserver:
     description: "SubServer's main command"
-

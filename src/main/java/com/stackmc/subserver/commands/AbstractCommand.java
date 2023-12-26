@@ -1,6 +1,6 @@
-package fr.loanspac.subserver.commands;
+package com.stackmc.subserver.commands;
 
-import fr.loanspac.subserver.SubServer;
+import com.stackmc.subserver.SubServer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

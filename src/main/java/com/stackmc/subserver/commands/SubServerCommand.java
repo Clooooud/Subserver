@@ -1,10 +1,11 @@
-package fr.loanspac.subserver.commands;
+package com.stackmc.subserver.commands;
 
-import fr.loanspac.subserver.SubServer;
-import fr.loanspac.subserver.commands.subs.CreateSubCommand;
-import fr.loanspac.subserver.commands.subs.LoadSubCommand;
-import fr.loanspac.subserver.commands.subs.TpSubCommand;
-import fr.loanspac.subserver.commands.subs.UnloadSubCommand;
+
+import com.stackmc.subserver.SubServer;
+import com.stackmc.subserver.commands.subs.CreateSubCommand;
+import com.stackmc.subserver.commands.subs.LoadSubCommand;
+import com.stackmc.subserver.commands.subs.TpSubCommand;
+import com.stackmc.subserver.commands.subs.UnloadSubCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 

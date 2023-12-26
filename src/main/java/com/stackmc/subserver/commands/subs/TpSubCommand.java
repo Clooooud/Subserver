@@ -1,6 +1,6 @@
-package fr.loanspac.subserver.commands.subs;
+package com.stackmc.subserver.commands.subs;
 
-import fr.loanspac.subserver.SubServer;
+import com.stackmc.subserver.SubServer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
