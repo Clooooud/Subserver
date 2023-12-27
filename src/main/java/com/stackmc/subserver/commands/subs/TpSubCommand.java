@@ -1,6 +1,7 @@
 package com.stackmc.subserver.commands.subs;
 
 import com.stackmc.subserver.SubServer;
+import com.stackmc.subserver.instance.Instance;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -10,7 +11,6 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -21,7 +21,8 @@ public class TpSubCommand implements TabExecutor {
     public boolean onCommand(CommandSender sender, Command rootCommand, String label, String[] args) {
         if (sender instanceof Player) {
             if(!(args[0].isEmpty())) {
-                ((Player) sender).teleport(Objects.requireNonNull(Bukkit.getWorld(args[0])).getSpawnLocation());
+                Player player = (Player) sender;
+                Instance.getInstance(Bukkit.getWorld(args[0])).joinInstance(player);
                 return true;
             }
             sender.sendMessage("§cVous devez préciser un nom de monde.");

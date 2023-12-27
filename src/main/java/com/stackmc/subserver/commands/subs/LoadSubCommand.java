@@ -1,15 +1,12 @@
 package com.stackmc.subserver.commands.subs;
 
 import com.google.common.collect.Lists;
-import com.grinderwolf.swm.api.SlimePlugin;
-import com.grinderwolf.swm.api.exceptions.*;
-import com.grinderwolf.swm.api.loaders.SlimeLoader;
-import com.grinderwolf.swm.api.world.SlimeWorld;
-import com.grinderwolf.swm.api.world.properties.SlimeProperties;
-import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
+import com.grinderwolf.swm.api.exceptions.CorruptedWorldException;
+import com.grinderwolf.swm.api.exceptions.NewerFormatException;
+import com.grinderwolf.swm.api.exceptions.UnknownWorldException;
+import com.grinderwolf.swm.api.exceptions.WorldInUseException;
 import com.stackmc.subserver.SubServer;
 import com.stackmc.subserver.instance.Instance;
-import com.stackmc.subserver.listeners.WorldInitListener;
 import com.stackmc.subserver.worldgen.SWMUtils;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
@@ -17,12 +14,8 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -60,7 +53,7 @@ public class LoadSubCommand implements TabExecutor {
                     return;
                 }
 
-                plugin.getInstances().add(new Instance(args[0], Lists.newArrayList(world)));
+                new Instance(args[0], Lists.newArrayList(world)).register();
             }
         }, 20);
 
