@@ -32,9 +32,9 @@ public class CreateSubCommand implements TabExecutor {
             SlimePropertyMap properties = new SlimePropertyMap();
 
             properties.setString(SlimeProperties.DIFFICULTY, "normal");
-            properties.setInt(SlimeProperties.SPAWN_X, 123);
-            properties.setInt(SlimeProperties.SPAWN_Y, 112);
-            properties.setInt(SlimeProperties.SPAWN_Z, 170);
+            properties.setInt(SlimeProperties.SPAWN_X, 0);
+            properties.setInt(SlimeProperties.SPAWN_Y, 100);
+            properties.setInt(SlimeProperties.SPAWN_Z, 0);
 
             try {
                 // Note that this method should be called asynchronously
