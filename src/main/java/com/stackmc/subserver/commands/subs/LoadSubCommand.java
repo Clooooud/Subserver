@@ -33,10 +33,10 @@ public class LoadSubCommand implements TabExecutor {
     public boolean onCommand(CommandSender sender, Command rootCommand, String label, String[] args) {
         long startTime = System.currentTimeMillis();
         if(!(args[0].isEmpty())) {
-            SlimePlugin slime_plugin = (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
+            SlimePlugin slimePlugin = (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
 
             String worldName = args[0];
-            SlimeLoader loader = slime_plugin.getLoader("file");
+            SlimeLoader loader = slimePlugin.getLoader("file");
             SlimePropertyMap properties = new SlimePropertyMap();
 
             properties.setString(SlimeProperties.DIFFICULTY, "normal");
@@ -46,10 +46,10 @@ public class LoadSubCommand implements TabExecutor {
 
             try {
                 // Note that this method should be called asynchronously
-                SlimeWorld world = slime_plugin.loadWorld(loader, worldName, false, properties);
+                SlimeWorld world = slimePlugin.loadWorld(loader, worldName, false, properties);
 
                 // This method must be called synchronously
-                slime_plugin.generateWorld(world);
+                slimePlugin.generateWorld(world);
             } catch (UnknownWorldException | IOException | CorruptedWorldException | NewerFormatException | WorldInUseException ex) {
                 sender.sendMessage("§cUne erreur est survenue lors du chargement du monde.");
                 return false;
@@ -60,28 +60,18 @@ public class LoadSubCommand implements TabExecutor {
 
             List<World> worlds = new ArrayList<>();
 
-            /*
-            Bukkit.getScheduler().runTaskLater(plugin, new BukkitRunnable() {
-                @Override
-                public void run() {
-                    worlds.add(Bukkit.getWorld(args[0]));
-                    plugin.getInstances().add(new Instance(args[0], worlds));
-                }
-            }, 200);
-             */
-
-            new BukkitRunnable() {
+            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                 @Override
                 public void run() {
                     World world = Bukkit.getWorld(args[0]);
                     if (world == null) {
-                        this.runTaskLater(...);
+                        Bukkit.getScheduler().runTaskLater(plugin, this, 20);
                         return;
                     }
                     worlds.add(world);
                     plugin.getInstances().add(new Instance(args[0], worlds));
                 }
-            };
+            }, 20);
 
             return true;
         }

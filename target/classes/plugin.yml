@@ -1,0 +1,9 @@
+name: SubServer
+version: '1.0-SNAPSHOT'
+main: com.stackmc.subserver.SubServer
+api-version: '1.12.2'
+depend: [SlimeWorldManager]
+authors: [ LoanSpac, Clooooud ]
+commands:
+  subserver:
+    description: "SubServer's main command"
