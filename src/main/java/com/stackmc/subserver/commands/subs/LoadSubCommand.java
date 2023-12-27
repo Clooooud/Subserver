@@ -1,5 +1,6 @@
 package com.stackmc.subserver.commands.subs;
 
+import com.google.common.collect.Lists;
 import com.grinderwolf.swm.api.SlimePlugin;
 import com.grinderwolf.swm.api.exceptions.*;
 import com.grinderwolf.swm.api.loaders.SlimeLoader;
@@ -9,6 +10,7 @@ import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
 import com.stackmc.subserver.SubServer;
 import com.stackmc.subserver.instance.Instance;
 import com.stackmc.subserver.listeners.WorldInitListener;
+import com.stackmc.subserver.worldgen.SWMUtils;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -31,52 +33,38 @@ public class LoadSubCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command rootCommand, String label, String[] args) {
-        long startTime = System.currentTimeMillis();
-        if(!(args[0].isEmpty())) {
-            SlimePlugin slimePlugin = (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
-
-            String worldName = args[0];
-            SlimeLoader loader = slimePlugin.getLoader("file");
-            SlimePropertyMap properties = new SlimePropertyMap();
-
-            properties.setString(SlimeProperties.DIFFICULTY, "normal");
-            properties.setInt(SlimeProperties.SPAWN_X, 0);
-            properties.setInt(SlimeProperties.SPAWN_Y, 100);
-            properties.setInt(SlimeProperties.SPAWN_Z, 0);
-
-            try {
-                // Note that this method should be called asynchronously
-                SlimeWorld world = slimePlugin.loadWorld(loader, worldName, false, properties);
-
-                // This method must be called synchronously
-                slimePlugin.generateWorld(world);
-            } catch (UnknownWorldException | IOException | CorruptedWorldException | NewerFormatException | WorldInUseException ex) {
-                sender.sendMessage("§cUne erreur est survenue lors du chargement du monde.");
-                return false;
-            }
-
-            long totalTime = System.currentTimeMillis() - startTime;
-            sender.sendMessage("Monde chargé en " + totalTime + "ms ou " + ((float) totalTime / 50f) + " ticks .");
-
-            List<World> worlds = new ArrayList<>();
-
-            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    World world = Bukkit.getWorld(args[0]);
-                    if (world == null) {
-                        Bukkit.getScheduler().runTaskLater(plugin, this, 20);
-                        return;
-                    }
-                    worlds.add(world);
-                    plugin.getInstances().add(new Instance(args[0], worlds));
-                }
-            }, 20);
-
-            return true;
+        if(args[0].isEmpty()) {
+            sender.sendMessage("§cVous devez préciser un nom de monde.");
+            return false;
         }
-        sender.sendMessage("§cVous devez préciser un nom de monde.");
-        return false;
+
+        String worldName = args[0];
+        long startTime = System.currentTimeMillis();
+
+        try {
+            SWMUtils.loadWorld(worldName);
+        } catch (UnknownWorldException | IOException | CorruptedWorldException | NewerFormatException | WorldInUseException ex) {
+            sender.sendMessage("§cUne erreur est survenue lors du chargement du monde.");
+            return false;
+        }
+
+        long totalTime = System.currentTimeMillis() - startTime;
+        sender.sendMessage("Monde chargé en " + totalTime + "ms ou " + ((float) totalTime / 50f) + " ticks .");
+
+        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            @Override
+            public void run() {
+                World world = Bukkit.getWorld(args[0]);
+                if (world == null) {
+                    Bukkit.getScheduler().runTaskLater(plugin, this, 20);
+                    return;
+                }
+
+                plugin.getInstances().add(new Instance(args[0], Lists.newArrayList(world)));
+            }
+        }, 20);
+
+        return true;
     }
 
     @Override

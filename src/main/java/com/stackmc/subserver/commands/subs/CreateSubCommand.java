@@ -6,6 +6,7 @@ import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
 import com.stackmc.subserver.SubServer;
+import com.stackmc.subserver.worldgen.SWMUtils;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -23,33 +24,24 @@ public class CreateSubCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command rootCommand, String label, String[] args) {
-        long startTime = System.currentTimeMillis();
-        if(!(args[0].isEmpty())) {
-            SlimePlugin plugin = (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
-
-            String worldName = args[0];
-            SlimeLoader loader = plugin.getLoader("file");
-            SlimePropertyMap properties = new SlimePropertyMap();
-
-            properties.setString(SlimeProperties.DIFFICULTY, "normal");
-            properties.setInt(SlimeProperties.SPAWN_X, 0);
-            properties.setInt(SlimeProperties.SPAWN_Y, 100);
-            properties.setInt(SlimeProperties.SPAWN_Z, 0);
-
-            try {
-                // Note that this method should be called asynchronously
-                plugin.createEmptyWorld(loader, worldName, false, properties);
-            } catch (WorldAlreadyExistsException | IOException ex) {
-                sender.sendMessage("§cUne erreur est survenue lors de la création du monde.");
-                return false;
-            }
-
-            long totalTime = System.currentTimeMillis() - startTime;
-            sender.sendMessage("Monde créé en " + totalTime + "ms ou " + ((float) totalTime / 50f) + " ticks .");
-            return true;
+        if(args[0].isEmpty()) {
+            sender.sendMessage("§cVous devez préciser un nom de monde.");
+            return false;
         }
-        sender.sendMessage("§cVous devez préciser un nom de monde.");
-        return false;
+
+        String worldName = args[0];
+        long startTime = System.currentTimeMillis();
+
+        try {
+            SWMUtils.createEmptyWorld(worldName);
+        } catch (WorldAlreadyExistsException | IOException ex) {
+            sender.sendMessage("§cUne erreur est survenue lors de la création du monde.");
+            return false;
+        }
+
+        long totalTime = System.currentTimeMillis() - startTime;
+        sender.sendMessage("Monde créé en " + totalTime + "ms ou " + ((float) totalTime / 50f) + " ticks .");
+        return true;
     }
 
     @Override
