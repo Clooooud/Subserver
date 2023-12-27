@@ -1,6 +1,5 @@
 package com.stackmc.subserver.commands.subs;
 
-import com.google.common.collect.Lists;
 import com.grinderwolf.swm.api.exceptions.CorruptedWorldException;
 import com.grinderwolf.swm.api.exceptions.NewerFormatException;
 import com.grinderwolf.swm.api.exceptions.UnknownWorldException;
@@ -53,7 +52,9 @@ public class LoadSubCommand implements TabExecutor {
                     return;
                 }
 
-                new Instance(args[0], Lists.newArrayList(world)).register();
+                Instance instance = new Instance(args[0], plugin);
+                instance.addWorld(world);
+                instance.register();
             }
         }, 20);
 

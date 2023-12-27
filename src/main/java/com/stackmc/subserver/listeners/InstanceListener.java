@@ -2,6 +2,7 @@ package com.stackmc.subserver.listeners;
 
 import com.stackmc.subserver.SubServer;
 import com.stackmc.subserver.instance.Instance;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -17,19 +18,24 @@ public class InstanceListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
+        Bukkit.getOnlinePlayers().forEach(target -> {
+            event.getPlayer().hidePlayer(plugin, target);
+            target.hidePlayer(plugin, event.getPlayer());
+        });
         event.setJoinMessage(null);
-        // TODO: afficher dans les instances un join
     }
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
+        event.setCancelled(true);
+
         Instance instance = Instance.getInstance(event.getPlayer().getWorld());
 
         if (instance == null) {
+            System.err.println("UN JOUEUR TENTE DE PARLER DANS UN MONDE HORS INSTANCE: " + event.getMessage());
             return;
         }
 
         instance.onChatEvent(event.getPlayer(), event.getMessage());
-        event.setCancelled(true);
     }
 }

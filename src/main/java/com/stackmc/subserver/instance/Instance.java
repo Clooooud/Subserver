@@ -1,5 +1,6 @@
 package com.stackmc.subserver.instance;
 
+import com.stackmc.subserver.SubServer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.OfflinePlayer;
@@ -23,14 +24,23 @@ public class Instance {
     }
 
     public final String name;
-    public final List<World> worlds;
+    public final SubServer plugin;
+    public final List<World> worlds = new ArrayList<>();
     public final Set<OfflinePlayer> offlinePlayers = new HashSet<>();
 
     public void register() {
         instances.add(this);
     }
 
+    public void addWorld(World world) {
+        worlds.add(world);
+    }
+
     public void joinInstance(Player player) {
+        getPlayers().forEach(target -> {
+            player.showPlayer(plugin, target);
+            target.showPlayer(plugin, player);
+        });
         offlinePlayers.add(player);
         player.teleport(worlds.get(0).getSpawnLocation());
     }
@@ -46,6 +56,4 @@ public class Instance {
     public List<Player> getPlayers() {
         return offlinePlayers.stream().filter(OfflinePlayer::isOnline).map(OfflinePlayer::getPlayer).collect(Collectors.toList());
     }
-
-
 }
