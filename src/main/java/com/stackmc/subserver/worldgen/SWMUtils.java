@@ -6,9 +6,13 @@ import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class SWMUtils {
 
@@ -25,6 +29,25 @@ public class SWMUtils {
         properties.setInt(SlimeProperties.SPAWN_Z, 0);
 
         return properties;
+    }
+
+    public static String worldSlimeFolder() {
+        try {
+            File src = new File("plugins/SlimeWorldManager/sources.yml");
+            Scanner myReader = new Scanner(src);
+            myReader.nextLine();
+
+            String data = myReader.nextLine();
+            String[] dataSplit = data.split(":");
+            String dataPart = dataSplit[1];
+            String[] folderNameSplit = dataPart.split(" ");
+            String folderName = folderNameSplit[1];
+            myReader.close();
+            return folderName;
+        } catch (FileNotFoundException e) {
+            Bukkit.getLogger().severe("§cLa source n'existe pas.");
+            return null;
+        }
     }
 
     public static void loadWorld(String worldName) throws UnknownWorldException, IOException, CorruptedWorldException, NewerFormatException, WorldInUseException {

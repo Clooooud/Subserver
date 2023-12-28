@@ -14,9 +14,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class LoadSubCommand implements TabExecutor {
@@ -35,10 +38,22 @@ public class LoadSubCommand implements TabExecutor {
         }
 
         Instance instance = new Instance(args[0], plugin);
+        UUID uuid = UUID.randomUUID();
+        String uuidAsString = uuid.toString();
 
         for(int i = 1; i != args.length; i++) {
-            String worldName = args[i];
+            String worldName = uuidAsString + "_" + args[i];
             long startTime = System.currentTimeMillis();
+
+            File src = new File(SWMUtils.worldSlimeFolder() + "/" + args[i] + ".slime");
+            File dest = new File( SWMUtils.worldSlimeFolder() + "/" + worldName + ".slime");
+
+            try {
+                Files.copy(src.toPath(), dest.toPath());
+            } catch (IOException e) {
+                sender.sendMessage("§cCe monde n'existe pas.");
+                return false;
+            }
 
             try {
                 SWMUtils.loadWorld(worldName);
@@ -55,7 +70,7 @@ public class LoadSubCommand implements TabExecutor {
             @Override
             public void run() {
                 for(int i = 1; i != args.length; i++) {
-                    World world = Bukkit.getWorld(args[i]);
+                    World world = Bukkit.getWorld(uuidAsString + "_" + args[i]);
                     if (world == null) {
                         Bukkit.getScheduler().runTaskLater(plugin, this, 20);
                         return;
