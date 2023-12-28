@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Getter
 public class Instance {
 
-    private static final List<Instance> instances = new ArrayList<>();
+    @Getter private static final List<Instance> instances = new ArrayList<>();
 
     public static Instance getInstance(World world) {
         return instances.stream().filter(instance -> instance.worlds.contains(world)).findAny().orElse(null);

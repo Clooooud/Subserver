@@ -2,10 +2,7 @@ package com.stackmc.subserver.commands;
 
 
 import com.stackmc.subserver.SubServer;
-import com.stackmc.subserver.commands.subs.CreateSubCommand;
-import com.stackmc.subserver.commands.subs.LoadSubCommand;
-import com.stackmc.subserver.commands.subs.TpSubCommand;
-import com.stackmc.subserver.commands.subs.UnloadSubCommand;
+import com.stackmc.subserver.commands.subs.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -17,6 +14,7 @@ public class SubServerCommand extends AbstractCommand {
         this.registerSubCommand("tp", new TpSubCommand(plugin));
         this.registerSubCommand("load", new LoadSubCommand(plugin));
         this.registerSubCommand("unload", new UnloadSubCommand(plugin));
+        this.registerSubCommand("list", new ListSubCommand(plugin));
     }
 
     @Override

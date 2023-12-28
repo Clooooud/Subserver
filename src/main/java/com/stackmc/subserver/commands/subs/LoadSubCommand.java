@@ -25,39 +25,48 @@ public class LoadSubCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command rootCommand, String label, String[] args) {
-        if(args[0].isEmpty()) {
-            sender.sendMessage("§cVous devez préciser un nom de monde.");
+        if(args.length == 0) {
+            sender.sendMessage("§cVous devez préciser un nom d'instance.");
+            return false;
+        }
+        if(args.length < 2) {
+            sender.sendMessage("§cVous devez préciser au moins un monde à charger.");
             return false;
         }
 
-        String worldName = args[0];
-        long startTime = System.currentTimeMillis();
+        Instance instance = new Instance(args[0], plugin);
 
-        try {
-            SWMUtils.loadWorld(worldName);
-        } catch (UnknownWorldException | IOException | CorruptedWorldException | NewerFormatException | WorldInUseException ex) {
-            sender.sendMessage("§cUne erreur est survenue lors du chargement du monde.");
-            return false;
+        for(int i = 1; i != args.length; i++) {
+            String worldName = args[i];
+            long startTime = System.currentTimeMillis();
+
+            try {
+                SWMUtils.loadWorld(worldName);
+            } catch (UnknownWorldException | IOException | CorruptedWorldException | NewerFormatException | WorldInUseException ex) {
+                sender.sendMessage("§cUne erreur est survenue lors du chargement du monde " + worldName + ".");
+                return false;
+            }
+
+            long totalTime = System.currentTimeMillis() - startTime;
+            sender.sendMessage("Monde " + worldName +  " chargé en " + totalTime + "ms ou " + ((float) totalTime / 50f) + " ticks .");
         }
-
-        long totalTime = System.currentTimeMillis() - startTime;
-        sender.sendMessage("Monde chargé en " + totalTime + "ms ou " + ((float) totalTime / 50f) + " ticks .");
 
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
             public void run() {
-                World world = Bukkit.getWorld(args[0]);
-                if (world == null) {
-                    Bukkit.getScheduler().runTaskLater(plugin, this, 20);
-                    return;
+                for(int i = 1; i != args.length; i++) {
+                    World world = Bukkit.getWorld(args[i]);
+                    if (world == null) {
+                        Bukkit.getScheduler().runTaskLater(plugin, this, 20);
+                        return;
+                    }
+                    instance.addWorld(world);
                 }
-
-                Instance instance = new Instance(args[0], plugin);
-                instance.addWorld(world);
-                instance.register();
             }
         }, 20);
 
+        instance.register();
+        sender.sendMessage("Instance chargé.");
         return true;
     }
 

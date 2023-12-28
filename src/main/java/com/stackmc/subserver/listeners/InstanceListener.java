@@ -32,7 +32,7 @@ public class InstanceListener implements Listener {
         Instance instance = Instance.getInstance(event.getPlayer().getWorld());
 
         if (instance == null) {
-            System.err.println("UN JOUEUR TENTE DE PARLER DANS UN MONDE HORS INSTANCE: " + event.getMessage());
+            Bukkit.getLogger().info("UN JOUEUR TENTE DE PARLER DANS UN MONDE HORS INSTANCE: " + event.getMessage());
             return;
         }
 

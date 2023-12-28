@@ -20,12 +20,17 @@ public class TpSubCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command rootCommand, String label, String[] args) {
         if (sender instanceof Player) {
-            if(!(args[0].isEmpty())) {
+            if(args.length == 0) {
+                sender.sendMessage("§cVous devez préciser un nom de monde.");
+                return false;
+            }
+            World world = Bukkit.getWorld(args[0]);
+            if(world != null) {
                 Player player = (Player) sender;
                 Instance.getInstance(Bukkit.getWorld(args[0])).joinInstance(player);
                 return true;
             }
-            sender.sendMessage("§cVous devez préciser un nom de monde.");
+            sender.sendMessage("§cMonde inexistant.");
             return false;
         }
         return false;

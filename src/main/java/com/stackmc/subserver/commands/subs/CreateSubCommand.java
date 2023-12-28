@@ -19,7 +19,7 @@ public class CreateSubCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command rootCommand, String label, String[] args) {
-        if(args[0].isEmpty()) {
+        if(args.length == 0) {
             sender.sendMessage("§cVous devez préciser un nom de monde.");
             return false;
         }
