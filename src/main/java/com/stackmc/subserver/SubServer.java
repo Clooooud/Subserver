@@ -1,6 +1,7 @@
 package com.stackmc.subserver;
 
 import com.stackmc.subserver.commands.SubServerCommand;
+import com.stackmc.subserver.instance.Instance;
 import com.stackmc.subserver.listeners.InstanceListener;
 import com.stackmc.subserver.listeners.WorldInitListener;
 import org.bukkit.Bukkit;
@@ -16,10 +17,6 @@ public final class SubServer extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        Bukkit.getLogger().info("===========================");
-        Bukkit.getLogger().info("Enable SubServer 1.0");
-        Bukkit.getLogger().info("===========================");
-
         this.listeners.add(new WorldInitListener());
         this.listeners.add(new InstanceListener(this));
         registerListeners();
@@ -28,9 +25,8 @@ public final class SubServer extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Bukkit.getLogger().info("===========================");
-        Bukkit.getLogger().info("Disable SubServer 1.0");
-        Bukkit.getLogger().info("===========================");
+        Instance.getInstances().forEach(Instance::close);
+        Instance.getInstances().clear();
     }
 
     public void registerCommands(){

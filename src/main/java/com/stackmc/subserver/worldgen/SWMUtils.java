@@ -5,9 +5,10 @@ import com.grinderwolf.swm.api.exceptions.*;
 import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
+import com.grinderwolf.swm.api.world.properties.SlimeProperty;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
-import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class SWMUtils {
+
+    private static String slimeFolder = null;
 
     private static SlimePlugin getSlimePlugin() {
         return (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
@@ -31,7 +34,12 @@ public class SWMUtils {
         return properties;
     }
 
-    public static String worldSlimeFolder() {
+    @NotNull
+    public static String getWorldSlimeFolder() {
+        if (slimeFolder != null) {
+            return slimeFolder;
+        }
+
         try {
             File src = new File("plugins/SlimeWorldManager/sources.yml");
             Scanner myReader = new Scanner(src);
@@ -41,13 +49,20 @@ public class SWMUtils {
             String[] dataSplit = data.split(":");
             String dataPart = dataSplit[1];
             String[] folderNameSplit = dataPart.split(" ");
-            String folderName = folderNameSplit[1];
+            slimeFolder = folderNameSplit[1];
             myReader.close();
-            return folderName;
+            return slimeFolder;
         } catch (FileNotFoundException e) {
             Bukkit.getLogger().severe("§cLa source n'existe pas.");
             return null;
         }
+    }
+
+    public static void deleteWorld(String worldName) throws UnknownWorldException, IOException {
+        SlimeLoader loader = getSlimePlugin().getLoader("file");
+
+        loader.unlockWorld(worldName);
+        loader.deleteWorld(worldName);
     }
 
     public static void loadWorld(String worldName) throws UnknownWorldException, IOException, CorruptedWorldException, NewerFormatException, WorldInUseException {
