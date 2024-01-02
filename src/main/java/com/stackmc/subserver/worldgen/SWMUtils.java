@@ -5,7 +5,6 @@ import com.grinderwolf.swm.api.exceptions.*;
 import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
-import com.grinderwolf.swm.api.world.properties.SlimeProperty;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
@@ -43,8 +42,10 @@ public class SWMUtils {
         try {
             File src = new File("plugins/SlimeWorldManager/sources.yml");
             Scanner myReader = new Scanner(src);
-            myReader.nextLine();
-
+            String read = "file:";
+            while(!(myReader.nextLine().equals(read))) {
+                myReader.nextLine();
+            }
             String data = myReader.nextLine();
             String[] dataSplit = data.split(":");
             String dataPart = dataSplit[1];
