@@ -1,25 +1,18 @@
 package com.stackmc.subserver.commands.subs;
 
-import com.grinderwolf.swm.api.exceptions.CorruptedWorldException;
-import com.grinderwolf.swm.api.exceptions.NewerFormatException;
-import com.grinderwolf.swm.api.exceptions.UnknownWorldException;
-import com.grinderwolf.swm.api.exceptions.WorldInUseException;
 import com.stackmc.subserver.SubServer;
 import com.stackmc.subserver.instance.Instance;
 import com.stackmc.subserver.worldgen.SWMUtils;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class LoadSubCommand implements TabExecutor {
@@ -37,56 +30,37 @@ public class LoadSubCommand implements TabExecutor {
             return false;
         }
 
-        Instance instance = new Instance(args[0], plugin);
-        UUID uuid = UUID.randomUUID();
-        String uuidAsString = uuid.toString();
+        String instanceName = args[0];
 
-        for(int i = 1; i != args.length; i++) {
-            String worldName = uuidAsString + "_" + args[i];
-            long startTime = System.currentTimeMillis();
-
-            File src = new File(SWMUtils.worldSlimeFolder() + "/" + args[i] + ".slime");
-            File dest = new File( SWMUtils.worldSlimeFolder() + "/" + worldName + ".slime");
-
-            try {
-                Files.copy(src.toPath(), dest.toPath());
-            } catch (IOException e) {
-                sender.sendMessage("§cCe monde n'existe pas.");
-                return false;
-            }
-
-            try {
-                SWMUtils.loadWorld(worldName);
-            } catch (UnknownWorldException | IOException | CorruptedWorldException | NewerFormatException | WorldInUseException ex) {
-                sender.sendMessage("§cUne erreur est survenue lors du chargement du monde " + worldName + ".");
-                return false;
-            }
-
-            long totalTime = System.currentTimeMillis() - startTime;
-            sender.sendMessage("Monde " + worldName +  " chargé en " + totalTime + "ms ou " + ((float) totalTime / 50f) + " ticks .");
+        if (Instance.getInstances().stream().anyMatch(instance -> instance.getName().equals(instanceName))) {
+            sender.sendMessage(String.format("§cUne instance du même nom (%s) existe déjà.", instanceName));
+            return false;
         }
 
-        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-            @Override
-            public void run() {
-                for(int i = 1; i != args.length; i++) {
-                    World world = Bukkit.getWorld(uuidAsString + "_" + args[i]);
-                    if (world == null) {
-                        Bukkit.getScheduler().runTaskLater(plugin, this, 20);
-                        return;
-                    }
-                    instance.addWorld(world);
-                }
-            }
-        }, 20);
+        Instance instance = new Instance(instanceName, plugin);
+
+        for (int i = 1; i < args.length; i++) {
+            instance.loadWorld(args[i], sender::sendMessage);
+        }
 
         instance.register();
-        sender.sendMessage("Instance chargé.");
+        sender.sendMessage("Instance créée.");
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command rootCommand, String label, String[] args) {
-        return Collections.emptyList(); // ça doit être possible de trouver les noms de maps déjà existants en checkant le dossier
+        if (args.length == 1) {
+            return Collections.emptyList();
+        }
+
+        File file = new File(SWMUtils.getWorldSlimeFolder());
+        File[] files = file.listFiles();
+
+        if (files == null) {
+            return Collections.emptyList();
+        }
+
+        return Arrays.stream(files).map(File::getName).map(name -> name.split("\\.slime")[0]).collect(Collectors.toList());
     }
 }
