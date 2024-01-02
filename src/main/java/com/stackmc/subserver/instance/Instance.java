@@ -31,6 +31,10 @@ public class Instance {
         return instances.stream().filter(instance -> instance.getWorlds().contains(world)).findAny().orElse(null);
     }
 
+    public static Instance getInstance(String name) {
+        return instances.stream().filter(instance -> instance.getName().contains(name)).findAny().orElse(null);
+    }
+
     private final String name;
     private final SubServer plugin;
     private final List<World> worlds = new ArrayList<>();
