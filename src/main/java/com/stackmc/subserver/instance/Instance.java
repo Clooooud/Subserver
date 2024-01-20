@@ -119,7 +119,24 @@ public class Instance {
 
     public void onChatEvent(Player player, String message) {
         sendMessageToInstance("<" + player.getDisplayName() + "> " + message);
+        // TODO : config.yml
     }
+
+    public void onJoinEvent(Player player) {
+        sendMessageToInstance("§6" + player.getDisplayName() + " viens de rejoindre le serveur.");
+        // TODO : config.yml
+    }
+
+    public void onQuitEvent(Player player) {
+        sendMessageToInstance("§6" + player.getDisplayName() + " viens de quitter le serveur.");
+        // TODO : config.yml
+    }
+
+    public void onDeathEvent(Player player) {
+        sendMessageToInstance(player.getDisplayName() + " viens de mourir.");
+        // TODO : config.yml
+    }
+
 
     public void sendMessageToInstance(String message) {
         getPlayers().forEach(receiver -> receiver.sendMessage(message));
