@@ -27,9 +27,8 @@ public class InstanceListener implements Listener {
         event.setJoinMessage(null);
 
         Instance instance = Instance.getInstance(event.getPlayer().getWorld());
-        if (instance == null) {
-            return;
-        }
+        if (instance == null) return;
+        instance.joinInstance(event.getPlayer());
         instance.onJoinEvent(event.getPlayer());
     }
 
@@ -38,9 +37,7 @@ public class InstanceListener implements Listener {
         event.setQuitMessage(null);
 
         Instance instance = Instance.getInstance(event.getPlayer().getWorld());
-        if (instance == null) {
-            return;
-        }
+        if (instance == null) return;
         instance.onQuitEvent(event.getPlayer());
     }
 
@@ -49,9 +46,7 @@ public class InstanceListener implements Listener {
         event.setDeathMessage(null);
 
         Instance instance = Instance.getInstance(event.getEntity().getPlayer().getWorld());
-        if (instance == null) {
-            return;
-        }
+        if (instance == null) return;
         instance.onDeathEvent(event.getEntity().getPlayer());
     }
 
