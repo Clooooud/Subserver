@@ -75,11 +75,4 @@ public class SWMUtils {
         // This method must be called synchronously
         getSlimePlugin().generateWorld(world);
     }
-
-    public static void createEmptyWorld(String worldName) throws IOException, WorldAlreadyExistsException {
-        SlimeLoader loader = getSlimePlugin().getLoader("file");
-
-        // Note that this method should be called asynchronously
-        getSlimePlugin().createEmptyWorld(loader, worldName, false, getDefaultProperties());
-    }
 }
