@@ -109,12 +109,22 @@ public class Instance {
     }
 
     public void joinInstance(Player player) {
+        Instance oldInstance = Instance.getInstance(player.getWorld());
+        if(oldInstance != null) oldInstance.quitInstance(player);
         getPlayers().forEach(target -> {
             player.showPlayer(plugin, target);
             target.showPlayer(plugin, player);
         });
         offlinePlayers.add(player);
         player.teleport(worlds.get(0).getSpawnLocation());
+    }
+
+    public void quitInstance(Player player) {
+        getPlayers().forEach(target -> {
+            player.hidePlayer(plugin, target);
+            target.hidePlayer(plugin, player);
+        });
+        offlinePlayers.remove(player);
     }
 
     public void onChatEvent(Player player, String message) {
