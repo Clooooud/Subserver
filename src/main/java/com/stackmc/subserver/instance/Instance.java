@@ -8,6 +8,7 @@ import com.stackmc.subserver.SubServer;
 import com.stackmc.subserver.worldgen.SWMUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -40,6 +41,10 @@ public class Instance {
     private final List<World> worlds = new ArrayList<>();
     private final Set<OfflinePlayer> offlinePlayers = new HashSet<>();
     private final UUID uniqueId = UUID.randomUUID();
+    @Setter private String chatMessage;
+    @Setter private String joinMessage;
+    @Setter private String quitMessage;
+    @Setter private String deathMessage;
 
     public void register() {
         instances.add(this);
@@ -120,6 +125,7 @@ public class Instance {
     }
 
     public void quitInstance(Player player) {
+        onQuitEvent(player);
         getPlayers().forEach(target -> {
             player.hidePlayer(plugin, target);
             target.hidePlayer(plugin, player);
@@ -128,25 +134,32 @@ public class Instance {
     }
 
     public void onChatEvent(Player player, String message) {
-        sendMessageToInstance("<" + player.getDisplayName() + "> " + message);
-        // TODO : config.yml
+        if(getChatMessage() == null) {
+            setChatMessage(plugin.getConfig().getString("instance-event.chat"));
+        }
+        sendMessageToInstance(getChatMessage().replace("player", player.getDisplayName()).replace("message", message));
     }
 
     public void onJoinEvent(Player player) {
-        sendMessageToInstance("§6" + player.getDisplayName() + " viens de rejoindre le serveur.");
-        // TODO : config.yml
+        if(getJoinMessage() == null) {
+            setJoinMessage(plugin.getConfig().getString("instance-event.join"));
+        }
+        sendMessageToInstance(getJoinMessage().replace("player", player.getDisplayName()));
     }
 
     public void onQuitEvent(Player player) {
-        sendMessageToInstance("§6" + player.getDisplayName() + " viens de quitter le serveur.");
-        // TODO : config.yml
+        if(getQuitMessage() == null) {
+            setQuitMessage(plugin.getConfig().getString("instance-event.quit"));
+        }
+        sendMessageToInstance(getQuitMessage().replace("player", player.getDisplayName()));
     }
 
     public void onDeathEvent(Player player) {
-        sendMessageToInstance(player.getDisplayName() + " viens de mourir.");
-        // TODO : config.yml
+        if(getDeathMessage() == null) {
+            setDeathMessage(plugin.getConfig().getString("instance-event.death"));
+        }
+        sendMessageToInstance(getDeathMessage().replace("player", player.getDisplayName()));
     }
-
 
     public void sendMessageToInstance(String message) {
         getPlayers().forEach(receiver -> receiver.sendMessage(message));

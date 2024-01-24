@@ -1,0 +1,5 @@
+instance-event:
+  chat: "<player> message"
+  join: "§6 player viens de rejoindre le serveur."
+  quit: "§6 player viens de quitter le serveur."
+  death: "player viens de mourir."

@@ -16,6 +16,7 @@ public final class SubServer extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
         this.listeners.add(new InstanceListener(this));
         registerListeners();
         registerCommands();
