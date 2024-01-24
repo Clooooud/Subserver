@@ -3,7 +3,6 @@ package com.stackmc.subserver;
 import com.stackmc.subserver.commands.SubServerCommand;
 import com.stackmc.subserver.instance.Instance;
 import com.stackmc.subserver.listeners.InstanceListener;
-import com.stackmc.subserver.listeners.WorldInitListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,7 +16,6 @@ public final class SubServer extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        this.listeners.add(new WorldInitListener());
         this.listeners.add(new InstanceListener(this));
         registerListeners();
         registerCommands();
