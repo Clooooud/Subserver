@@ -55,7 +55,7 @@ public class SWMUtils {
             return slimeFolder;
         } catch (FileNotFoundException e) {
             Bukkit.getLogger().severe("§cLa source n'existe pas.");
-            return null;
+            return "";
         }
     }
 

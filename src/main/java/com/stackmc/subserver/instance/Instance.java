@@ -5,10 +5,13 @@ import com.grinderwolf.swm.api.exceptions.NewerFormatException;
 import com.grinderwolf.swm.api.exceptions.UnknownWorldException;
 import com.grinderwolf.swm.api.exceptions.WorldInUseException;
 import com.stackmc.subserver.SubServer;
+import com.stackmc.subserver.events.AsyncPlayerChatInstanceEvent;
+import com.stackmc.subserver.events.PlayerDeathInstanceEvent;
+import com.stackmc.subserver.events.PlayerJoinInstanceEvent;
+import com.stackmc.subserver.events.PlayerQuitInstanceEvent;
 import com.stackmc.subserver.worldgen.SWMUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -41,10 +44,6 @@ public class Instance {
     private final List<World> worlds = new ArrayList<>();
     private final Set<OfflinePlayer> offlinePlayers = new HashSet<>();
     private final UUID uniqueId = UUID.randomUUID();
-    @Setter private String chatMessage;
-    @Setter private String joinMessage;
-    @Setter private String quitMessage;
-    @Setter private String deathMessage;
 
     public void register() {
         instances.add(this);
@@ -133,32 +132,36 @@ public class Instance {
         offlinePlayers.remove(player);
     }
 
-    public void onChatEvent(Player player, String message) {
-        if(getChatMessage() == null) {
-            setChatMessage(plugin.getConfig().getString("instance-event.chat"));
-        }
-        sendMessageToInstance(getChatMessage().replace("player", player.getDisplayName()).replace("message", message));
-    }
-
     public void onJoinEvent(Player player) {
-        if(getJoinMessage() == null) {
-            setJoinMessage(plugin.getConfig().getString("instance-event.join"));
-        }
-        sendMessageToInstance(getJoinMessage().replace("player", player.getDisplayName()));
+        String joinMessage = plugin.getConfig().getString("instance-event.join");
+        PlayerJoinInstanceEvent event = new PlayerJoinInstanceEvent(joinMessage, player, this);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if(event.isCancelled()) return;
+        sendMessageToInstance(joinMessage.replace("playerName()", player.getDisplayName()));
     }
 
     public void onQuitEvent(Player player) {
-        if(getQuitMessage() == null) {
-            setQuitMessage(plugin.getConfig().getString("instance-event.quit"));
-        }
-        sendMessageToInstance(getQuitMessage().replace("player", player.getDisplayName()));
+        String quitMessage = plugin.getConfig().getString("instance-event.quit");
+        PlayerQuitInstanceEvent event = new PlayerQuitInstanceEvent(quitMessage, player, this);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if(event.isCancelled()) return;
+        sendMessageToInstance(quitMessage.replace("playerName()", player.getDisplayName()));
     }
 
     public void onDeathEvent(Player player) {
-        if(getDeathMessage() == null) {
-            setDeathMessage(plugin.getConfig().getString("instance-event.death"));
-        }
-        sendMessageToInstance(getDeathMessage().replace("player", player.getDisplayName()));
+        String deathMessage = plugin.getConfig().getString("instance-event.death");
+        PlayerDeathInstanceEvent event = new PlayerDeathInstanceEvent(deathMessage, player, this);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if(event.isCancelled()) return;
+        sendMessageToInstance(deathMessage.replace("playerName()", player.getDisplayName()));
+    }
+
+    public void onChatEvent(Player player, String message) {
+        String chatMessage = plugin.getConfig().getString("instance-event.chat");
+        AsyncPlayerChatInstanceEvent event = new AsyncPlayerChatInstanceEvent(chatMessage, player, this);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if(event.isCancelled()) return;
+        sendMessageToInstance(chatMessage.replace("playerName()", player.getDisplayName()).replace("message()", message));
     }
 
     public void sendMessageToInstance(String message) {
