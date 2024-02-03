@@ -29,7 +29,6 @@ public class TpSubCommand implements TabExecutor {
                 Player player = (Player) sender;
                 Instance instance = Instance.getInstance(Bukkit.getWorld(args[0]));
                 instance.joinInstance(player);
-                instance.onJoinEvent(player);
                 return true;
             }
             sender.sendMessage("§cCe monde n'existe pas.");

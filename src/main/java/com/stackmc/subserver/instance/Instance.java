@@ -121,6 +121,7 @@ public class Instance {
         });
         offlinePlayers.add(player);
         player.teleport(worlds.get(0).getSpawnLocation());
+        onJoinEvent(player);
     }
 
     public void quitInstance(Player player) {
