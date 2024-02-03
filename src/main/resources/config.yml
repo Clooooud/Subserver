@@ -1,3 +1,5 @@
+settings:
+  auto-join-instance: true
 instance-event:
   chat: "<playerName()> message()"
   join: "§6 playerName() viens de rejoindre le serveur."

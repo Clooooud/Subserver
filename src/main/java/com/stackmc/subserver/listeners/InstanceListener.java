@@ -26,10 +26,10 @@ public class InstanceListener implements Listener {
         });
         event.setJoinMessage(null);
 
+        if(!(plugin.getConfig().getBoolean("settings.auto-join-instance"))) return;
         Instance instance = Instance.getInstance(event.getPlayer().getWorld());
         if (instance == null) return;
         instance.joinInstance(event.getPlayer());
-        instance.onJoinEvent(event.getPlayer());
     }
 
     @EventHandler
