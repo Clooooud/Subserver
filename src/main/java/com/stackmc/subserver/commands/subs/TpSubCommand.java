@@ -15,26 +15,22 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class TpSubCommand implements TabExecutor {
-
     private final SubServer plugin;
+
     @Override
     public boolean onCommand(CommandSender sender, Command rootCommand, String label, String[] args) {
-        if (sender instanceof Player) {
-            if(args.length == 0) {
-                sender.sendMessage("§cVous devez préciser un nom de monde.");
-                return false;
-            }
-            World world = Bukkit.getWorld(args[0]);
-            if(world != null) {
-                Player player = (Player) sender;
-                Instance instance = Instance.getInstance(Bukkit.getWorld(args[0]));
-                instance.joinInstance(player);
-                return true;
-            }
-            sender.sendMessage("§cCe monde n'existe pas.");
+        if(!(sender instanceof Player)) return false;
+        if(args.length == 0) {
+            sender.sendMessage("§cVous devez préciser un nom de monde.");
             return false;
         }
-        return false;
+        World world = Bukkit.getWorld(args[0]);
+        if(world == null) sender.sendMessage("§cCe monde n'existe pas.");
+        
+        Player player = (Player) sender;
+        Instance instance = Instance.getInstance(Bukkit.getWorld(args[0]));
+        instance.joinInstance(player);
+        return true;
     }
 
     @Override
