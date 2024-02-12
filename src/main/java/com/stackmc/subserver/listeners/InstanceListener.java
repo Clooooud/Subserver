@@ -2,13 +2,14 @@ package com.stackmc.subserver.listeners;
 
 import com.stackmc.subserver.SubServer;
 import com.stackmc.subserver.instance.Instance;
+import com.stackmc.subserver.instance.InstanceType;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class InstanceListener implements Listener {
 
@@ -26,9 +27,32 @@ public class InstanceListener implements Listener {
         });
         event.setJoinMessage(null);
 
-        if(!(plugin.getConfig().getBoolean("settings.auto-join-instance"))) return;
-        Instance instance = Instance.getInstance(event.getPlayer().getWorld());
-        if (instance == null) return;
+        List<InstanceType> autospawnTypes = this.plugin.getInstanceFactory().getInstanceTypes().stream()
+                .filter(InstanceType::isAutoJoin)
+                .collect(Collectors.toList());
+
+        if (autospawnTypes.isEmpty()) {
+            System.err.println("No instance type is set to auto-join.");
+            return;
+        }
+
+        if (autospawnTypes.size() > 1) {
+            System.err.println("More than one instance type is set to auto-join.");
+            return;
+        }
+
+        InstanceType type = autospawnTypes.get(0);
+        Instance instance = this.plugin.getInstanceFactory().getInstances(type).stream()
+                .filter(inst -> inst.getPlayers().size() < type.getMaxPlayers())
+                .findAny()
+                .orElse(null);
+
+        if (instance == null) {
+            System.err.println("No instance are open for auto-join.");
+            event.getPlayer().kickPlayer("Server is full, sorry.");
+            return;
+        }
+
         instance.joinInstance(event.getPlayer());
     }
 

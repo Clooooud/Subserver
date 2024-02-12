@@ -14,11 +14,14 @@ public class InstanceFactory {
 
     private final SubServer plugin;
 
-    @Getter
-    private final Set<InstanceType> instanceTypes = new HashSet<>();
+    @Getter private final Set<InstanceType> instanceTypes = new HashSet<>();
     private final Map<InstanceType, Set<Instance>> instances = new HashMap<>();
 
     private BukkitTask task;
+
+    public Set<Instance> getInstances(InstanceType type) {
+        return instances.getOrDefault(type, new HashSet<>());
+    }
 
     public void registerType(InstanceType type) {
         instanceTypes.add(type);
@@ -53,7 +56,6 @@ public class InstanceFactory {
                 generateWorlds(type, instance);
                 instance.register();
                 instances.add(instance);
-                System.out.println("Instance created");
             }
             this.instances.put(type, instances);
         }
