@@ -1,0 +1,77 @@
+package com.stackmc.subserver.instance;
+
+import com.stackmc.subserver.SubServer;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+@RequiredArgsConstructor
+public class InstanceFactory {
+
+    private final SubServer plugin;
+
+    @Getter
+    private final Set<InstanceType> instanceTypes = new HashSet<>();
+    private final Map<InstanceType, Set<Instance>> instances = new HashMap<>();
+
+    private BukkitTask task;
+
+    public void registerType(InstanceType type) {
+        instanceTypes.add(type);
+    }
+
+    public void unregisterType(InstanceType type) {
+        instanceTypes.remove(type);
+    }
+
+    public void startLoop() {
+        if (task != null) {
+            return;
+        }
+
+        task = Bukkit.getScheduler().runTaskTimer(plugin, this::generateInstances, 20, 20);
+    }
+
+    public void stopLoop() {
+        if (task == null) {
+            return;
+        }
+
+        task.cancel();
+        task = null;
+    }
+
+    public void generateInstances() {
+        for (InstanceType type : instanceTypes) {
+            Set<Instance> instances = this.instances.getOrDefault(type, new HashSet<>());
+            for (int i = 0; i < type.getMaxInstancesCount() - instances.size(); i++) {
+                Instance instance = new Instance(type.getName() + "_" + (i * new Random().nextInt(10000) * 5), plugin, type);
+                generateWorlds(type, instance);
+                instance.register();
+                instances.add(instance);
+                System.out.println("Instance created");
+            }
+            this.instances.put(type, instances);
+        }
+    }
+
+    private void generateWorlds(InstanceType type, Instance instance) {
+        AtomicInteger i = new AtomicInteger();
+        int max = type.getWorlds().length;
+        for (String worldName : type.getWorlds()) {
+            instance.loadWorld(worldName, (str) -> {
+                i.getAndIncrement();
+                if (i.get() == max) {
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        instance.setState(InstanceState.CLOSED);
+                        type.getPostInitRunnable().accept(instance);
+                    });
+                }
+            });
+        }
+    }
+}

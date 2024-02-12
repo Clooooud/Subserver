@@ -32,7 +32,7 @@ public class InstanceListener implements Listener {
         instance.joinInstance(event.getPlayer());
     }
 
-    @EventHandler
+    /*@EventHandler
     public void onQuit(PlayerQuitEvent event) {
         event.setQuitMessage(null);
 
@@ -62,5 +62,5 @@ public class InstanceListener implements Listener {
         }
 
         instance.onChatEvent(event.getPlayer(), event.getMessage());
-    }
+    }*/
 }

@@ -37,7 +37,7 @@ public class LoadSubCommand implements TabExecutor {
             return false;
         }
 
-        Instance instance = new Instance(instanceName, plugin);
+        Instance instance = new Instance(instanceName, plugin, null);
 
         for (int i = 1; i < args.length; i++) {
             instance.loadWorld(args[i], sender::sendMessage);

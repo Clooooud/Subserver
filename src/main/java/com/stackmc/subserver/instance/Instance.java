@@ -5,13 +5,10 @@ import com.grinderwolf.swm.api.exceptions.NewerFormatException;
 import com.grinderwolf.swm.api.exceptions.UnknownWorldException;
 import com.grinderwolf.swm.api.exceptions.WorldInUseException;
 import com.stackmc.subserver.SubServer;
-import com.stackmc.subserver.events.AsyncPlayerChatInstanceEvent;
-import com.stackmc.subserver.events.PlayerDeathInstanceEvent;
-import com.stackmc.subserver.events.PlayerJoinInstanceEvent;
-import com.stackmc.subserver.events.PlayerQuitInstanceEvent;
 import com.stackmc.subserver.worldgen.SWMUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -43,9 +40,11 @@ public class Instance {
 
     private final String name;
     private final SubServer plugin;
+    private final InstanceType type;
     private final List<World> worlds = new ArrayList<>();
     private final Set<OfflinePlayer> offlinePlayers = new HashSet<>();
     private final UUID uniqueId = UUID.randomUUID();
+    @Setter private InstanceState state = InstanceState.INIT;
 
     private final EventDispatcher eventDispatcher = new EventDispatcher();
 
@@ -137,11 +136,11 @@ public class Instance {
         });
         offlinePlayers.add(player);
         player.teleport(worlds.get(0).getSpawnLocation());
-        onJoinEvent(player);
+        //onJoinEvent(player);
     }
 
     public void quitInstance(Player player) {
-        onQuitEvent(player);
+        //onQuitEvent(player);
         getPlayers().forEach(target -> {
             player.hidePlayer(plugin, target);
             target.hidePlayer(plugin, player);
@@ -149,7 +148,7 @@ public class Instance {
         offlinePlayers.remove(player);
     }
 
-    public void onJoinEvent(Player player) {
+    /*public void onJoinEvent(Player player) {
         String joinMessage = plugin.getConfig().getString("instance-event.join");
         PlayerJoinInstanceEvent event = new PlayerJoinInstanceEvent(joinMessage, player, this);
         Bukkit.getServer().getPluginManager().callEvent(event);
@@ -179,7 +178,7 @@ public class Instance {
         Bukkit.getServer().getPluginManager().callEvent(event);
         if(event.isCancelled()) return;
         sendMessageToInstance(chatMessage.replace("playerName()", player.getDisplayName()).replace("message()", message));
-    }
+    }*/
 
     public void sendMessageToInstance(String message) {
         getPlayers().forEach(receiver -> receiver.sendMessage(message));

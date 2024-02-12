@@ -2,6 +2,8 @@ package com.stackmc.subserver;
 
 import com.stackmc.subserver.commands.SubServerCommand;
 import com.stackmc.subserver.instance.Instance;
+import com.stackmc.subserver.instance.InstanceFactory;
+import com.stackmc.subserver.instance.InstanceType;
 import com.stackmc.subserver.listeners.EventListener;
 import com.stackmc.subserver.listeners.InstanceListener;
 import org.bukkit.Bukkit;
@@ -14,6 +16,7 @@ import java.util.List;
 public final class SubServer extends JavaPlugin {
 
     private final List<Listener> listeners = new ArrayList<>();
+    private final InstanceFactory instanceFactory = new InstanceFactory(this);
 
     @Override
     public void onEnable() {
@@ -22,6 +25,8 @@ public final class SubServer extends JavaPlugin {
         this.listeners.add(new EventListener(this));
         registerListeners();
         registerCommands();
+
+        instanceFactory.startLoop();
     }
 
     @Override
