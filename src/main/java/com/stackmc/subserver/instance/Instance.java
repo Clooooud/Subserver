@@ -16,6 +16,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.Listener;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -45,8 +47,22 @@ public class Instance {
     private final Set<OfflinePlayer> offlinePlayers = new HashSet<>();
     private final UUID uniqueId = UUID.randomUUID();
 
+    private final EventDispatcher eventDispatcher = new EventDispatcher();
+
     public void register() {
         instances.add(this);
+    }
+
+    public void registerListener(Listener listener) {
+        eventDispatcher.registerListener(listener);
+    }
+
+    public void unregisterListener(Listener listener) {
+        eventDispatcher.unregisterListener(listener);
+    }
+
+    public void dispatchEvent(Event event) {
+        eventDispatcher.dispatchEvent(event);
     }
 
     public void close() {

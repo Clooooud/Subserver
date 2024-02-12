@@ -32,7 +32,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
-                    <outputDirectory>/home/spac/Bureau/‎/Projects/SubServer/Serveur 1.12.2/plugins</outputDirectory>
+                    <outputDirectory>C:\Users\Nuage\Desktop\serv\plugins</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -73,6 +73,11 @@
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.10.2</version>
+        </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
