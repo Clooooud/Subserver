@@ -148,39 +148,11 @@ public class Instance {
         offlinePlayers.remove(player);
     }
 
-    /*public void onJoinEvent(Player player) {
-        String joinMessage = plugin.getConfig().getString("instance-event.join");
-        PlayerJoinInstanceEvent event = new PlayerJoinInstanceEvent(joinMessage, player, this);
-        Bukkit.getServer().getPluginManager().callEvent(event);
-        if(event.isCancelled()) return;
-        sendMessageToInstance(joinMessage.replace("playerName()", player.getDisplayName()));
-    }
+    public void sendMessage(String message) {
+        if (message == null) {
+            return;
+        }
 
-    public void onQuitEvent(Player player) {
-        String quitMessage = plugin.getConfig().getString("instance-event.quit");
-        PlayerQuitInstanceEvent event = new PlayerQuitInstanceEvent(quitMessage, player, this);
-        Bukkit.getServer().getPluginManager().callEvent(event);
-        if(event.isCancelled()) return;
-        sendMessageToInstance(quitMessage.replace("playerName()", player.getDisplayName()));
-    }
-
-    public void onDeathEvent(Player player) {
-        String deathMessage = plugin.getConfig().getString("instance-event.death");
-        PlayerDeathInstanceEvent event = new PlayerDeathInstanceEvent(deathMessage, player, this);
-        Bukkit.getServer().getPluginManager().callEvent(event);
-        if(event.isCancelled()) return;
-        sendMessageToInstance(deathMessage.replace("playerName()", player.getDisplayName()));
-    }
-
-    public void onChatEvent(Player player, String message) {
-        String chatMessage = plugin.getConfig().getString("instance-event.chat");
-        AsyncPlayerChatInstanceEvent event = new AsyncPlayerChatInstanceEvent(chatMessage, player, this);
-        Bukkit.getServer().getPluginManager().callEvent(event);
-        if(event.isCancelled()) return;
-        sendMessageToInstance(chatMessage.replace("playerName()", player.getDisplayName()).replace("message()", message));
-    }*/
-
-    public void sendMessageToInstance(String message) {
         getPlayers().forEach(receiver -> receiver.sendMessage(message));
     }
 

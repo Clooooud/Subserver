@@ -6,7 +6,10 @@ import com.stackmc.subserver.instance.InstanceType;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,16 +56,21 @@ public class InstanceListener implements Listener {
             return;
         }
 
+        instance.dispatchEvent(event);
+        instance.sendMessage(event.getJoinMessage());
         instance.joinInstance(event.getPlayer());
     }
 
-    /*@EventHandler
+    @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         event.setQuitMessage(null);
 
         Instance instance = Instance.getInstance(event.getPlayer().getWorld());
         if (instance == null) return;
-        instance.onQuitEvent(event.getPlayer());
+
+        instance.dispatchEvent(event);
+        event.setQuitMessage(event.getQuitMessage());
+        instance.quitInstance(event.getPlayer());
     }
 
     @EventHandler
@@ -71,7 +79,9 @@ public class InstanceListener implements Listener {
 
         Instance instance = Instance.getInstance(event.getEntity().getPlayer().getWorld());
         if (instance == null) return;
-        instance.onDeathEvent(event.getEntity().getPlayer());
+
+        instance.dispatchEvent(event);
+        instance.sendMessage(event.getDeathMessage());
     }
 
     @EventHandler
@@ -85,6 +95,12 @@ public class InstanceListener implements Listener {
             return;
         }
 
-        instance.onChatEvent(event.getPlayer(), event.getMessage());
-    }*/
+        instance.dispatchEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+
+        event.setCancelled(true);
+        instance.sendMessage(String.format(event.getFormat(), event.getPlayer().getDisplayName(), event.getMessage()));
+    }
 }

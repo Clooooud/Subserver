@@ -1,5 +1,6 @@
 package com.stackmc.subserver.listeners;
 
+import com.google.common.collect.Sets;
 import com.stackmc.subserver.SubServer;
 import com.stackmc.subserver.instance.Instance;
 import org.bukkit.Bukkit;
@@ -9,9 +10,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.entity.EntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.hanging.HangingEvent;
 import org.bukkit.event.inventory.InventoryEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.vehicle.VehicleEvent;
 import org.bukkit.event.weather.WeatherEvent;
 import org.bukkit.event.world.WorldEvent;
@@ -33,12 +38,23 @@ public class EventListener implements Listener {
         catchAllEvents();
     }
 
+    private static final Set<Class<? extends Event>> skippedEvents = Sets.newHashSet(
+            AsyncPlayerChatEvent.class,
+            PlayerJoinEvent.class,
+            PlayerQuitEvent.class,
+            PlayerDeathEvent.class
+    );
+
     private void catchAllEvents() {
         // The magic happens here
         Reflections reflections = new Reflections("org.bukkit.event."); // Scan all classes in the org.bukkit.event package
         Set<Class<? extends Event>> eventClasses = reflections.getSubTypesOf(Event.class); // Get all classes that extend Event
 
         for (Class<? extends Event> eventClass : eventClasses) { // For each event class
+            if (skippedEvents.contains(eventClass)) { // If the event is in the skippedEvents set, skip it
+                continue;
+            }
+
             if (Modifier.isAbstract(eventClass.getModifiers())) { // If the class is abstract, skip it
                 continue;
             }

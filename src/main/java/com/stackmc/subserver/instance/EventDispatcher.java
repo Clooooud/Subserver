@@ -38,7 +38,7 @@ public class EventDispatcher {
         }
 
         private void createMappings() {
-            for (Method method : listener.getClass().getMethods()) {
+            for (Method method : listener.getClass().getDeclaredMethods()) {
                 if (method.isAnnotationPresent(EventHandler.class)) {
                     Class<?>[] parameters = method.getParameterTypes();
 
@@ -52,6 +52,7 @@ public class EventDispatcher {
                     Class<? extends Event> eventClass = parameters[0].asSubclass(Event.class);
                     this.mappings.computeIfAbsent(eventClass, k -> new ArrayList<>()).add(event -> {
                         try {
+                            method.setAccessible(true);
                             method.invoke(this.listener, event);
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             throw new RuntimeException(e);
