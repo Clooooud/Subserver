@@ -2,11 +2,11 @@
 
 ## About SubServer
 
-SubServer is a 1.12.2 Minecraft plugin made with Spigot. The plugin splits your server into instances. An instance can have multiples maps and players, like a sub-server. It uses Slime World Manager to asynchronously generate maps.
+SubServer is a 1.20.6 Minecraft plugin made with Paper. The plugin splits your server into instances. An instance can have multiples maps and players, like a sub-server. It uses Advanced Slime Paper to fast load maps.
 
 ## Depend
 
-```https://github.com/cijaaimee/Slime-World-Manager```
+[Advanced Slime Paper (ASWM)](https://github.com/InfernalSuite/AdvancedSlimePaper)
 
 ### Using SubServer
 
@@ -15,7 +15,6 @@ That is your entrypoint to control the behavior of instances.
 
 Another important point is that for each instance, if you need to register an event listener, you must do it using the `Instance#registerListener` method. It will allow you to only catch the events of your own instance, you won't have to filter yourself which event is yours.
 
-***
 ## Contributors
 - [LoanSpac](https://github.com/LoanSpac)
 - [Clooooud](https://github.com/Clooooud)
