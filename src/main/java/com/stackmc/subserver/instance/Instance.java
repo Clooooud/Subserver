@@ -1,9 +1,6 @@
 package com.stackmc.subserver.instance;
 
-import com.grinderwolf.swm.api.exceptions.CorruptedWorldException;
-import com.grinderwolf.swm.api.exceptions.NewerFormatException;
-import com.grinderwolf.swm.api.exceptions.UnknownWorldException;
-import com.grinderwolf.swm.api.exceptions.WorldInUseException;
+import com.infernalsuite.aswm.api.exceptions.*;
 import com.stackmc.subserver.SubServer;
 import com.stackmc.subserver.worldgen.SWMUtils;
 import lombok.Getter;
@@ -74,11 +71,7 @@ public class Instance {
 
         worlds.forEach(world -> {
             Bukkit.unloadWorld(world, false);
-            try {
-                SWMUtils.deleteWorld(world.getName());
-            } catch (UnknownWorldException | IOException e) {
-                throw new RuntimeException(e);
-            }
+            SWMUtils.deleteWorld(world.getName());
         });
 
         worlds.clear();
@@ -106,7 +99,7 @@ public class Instance {
                 try {
                     SWMUtils.loadWorld(destWorldName);
                 } catch (UnknownWorldException | IOException | CorruptedWorldException | NewerFormatException |
-                         WorldInUseException e) {
+                         WorldLoadedException | WorldLockedException e) {
                     finalCallback.accept("§cUne erreur est survenue lors du chargement du monde.");
                 }
             });

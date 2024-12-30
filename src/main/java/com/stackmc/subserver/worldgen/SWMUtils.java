@@ -1,11 +1,11 @@
 package com.stackmc.subserver.worldgen;
 
-import com.grinderwolf.swm.api.SlimePlugin;
-import com.grinderwolf.swm.api.exceptions.*;
-import com.grinderwolf.swm.api.loaders.SlimeLoader;
-import com.grinderwolf.swm.api.world.SlimeWorld;
-import com.grinderwolf.swm.api.world.properties.SlimeProperties;
-import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
+import com.infernalsuite.aswm.api.SlimePlugin;
+import com.infernalsuite.aswm.api.exceptions.*;
+import com.infernalsuite.aswm.api.loaders.SlimeLoader;
+import com.infernalsuite.aswm.api.world.SlimeWorld;
+import com.infernalsuite.aswm.api.world.properties.SlimeProperties;
+import com.infernalsuite.aswm.api.world.properties.SlimePropertyMap;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,9 +15,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class SWMUtils {
-
     private static String slimeFolder = null;
-
     private static SlimePlugin getSlimePlugin() {
         return (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
     }
@@ -59,20 +57,22 @@ public class SWMUtils {
         }
     }
 
-    public static void deleteWorld(String worldName) throws UnknownWorldException, IOException {
+    public static void deleteWorld(String worldName) {
         SlimeLoader loader = getSlimePlugin().getLoader("file");
-
-        loader.unlockWorld(worldName);
-        loader.deleteWorld(worldName);
+        try {
+            loader.deleteWorld(worldName);
+        }catch (UnknownWorldException | IOException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 
-    public static void loadWorld(String worldName) throws UnknownWorldException, IOException, CorruptedWorldException, NewerFormatException, WorldInUseException {
+    public static void loadWorld(String worldName) throws UnknownWorldException, IOException, CorruptedWorldException, NewerFormatException, WorldLoadedException, WorldLockedException {
         SlimeLoader loader = getSlimePlugin().getLoader("file");
 
-        // Note that this method should be called asynchronously
+        // note that this method should be called asynchronously
         SlimeWorld world = getSlimePlugin().loadWorld(loader, worldName, false, getDefaultProperties());
 
-        // This method must be called synchronously
-        getSlimePlugin().generateWorld(world);
+        // note that this method must be called synchronously
+        getSlimePlugin().loadWorld(world);
     }
 }
