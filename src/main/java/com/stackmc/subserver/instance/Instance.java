@@ -78,10 +78,15 @@ public class Instance {
         offlinePlayers.clear();
     }
 
-    public void loadWorld(String worldName, @Nullable Consumer<String> callback) {
+    public void loadWorld(String worldName, boolean isSavable, @Nullable Consumer<String> callback) {
         final Consumer<String> finalCallback = (callback == null ? (s -> {}) : callback);
 
-        String destWorldName = getUniqueId().toString() + "_" + worldName;
+        String destWorldName;
+        if (isSavable) {
+            destWorldName = worldName;
+        } else {
+            destWorldName = getUniqueId().toString() + "_" + worldName;
+        }
 
         File src = new File(SWMUtils.getWorldSlimeFolder() + File.separator + worldName + ".slime");
         File dest = new File( SWMUtils.getWorldSlimeFolder() + File.separator + destWorldName + ".slime");
@@ -89,7 +94,9 @@ public class Instance {
         long startTime = System.currentTimeMillis();
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
-                Files.copy(src.toPath(), dest.toPath());
+                if (!isSavable) {
+                    Files.copy(src.toPath(), dest.toPath());
+                }
             } catch (IOException e) {
                 finalCallback.accept("§cLe monde spécifié (" + worldName + ") n'existe pas.");
                 return;

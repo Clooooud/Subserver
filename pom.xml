@@ -32,7 +32,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
-                    <outputDirectory>/home/spac/Bureau/‎/Projects/SubServer/Serveur 1.20.6/plugins</outputDirectory>
+                    <outputDirectory>./target</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
