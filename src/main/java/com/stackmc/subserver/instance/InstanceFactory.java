@@ -53,7 +53,7 @@ public class InstanceFactory {
             Set<Instance> instances = this.instances.getOrDefault(type, new HashSet<>());
             for (int i = 0; i < type.getMaxInstancesCount() - instances.size(); i++) {
                 Instance instance = new Instance(type.getName() + "_" + (i * new Random().nextInt(10000) * 5), plugin, type);
-                generateWorlds(type, instance, type.isSavable());
+                generateWorlds(type, instance);
                 instance.register();
                 instances.add(instance);
             }
@@ -61,11 +61,11 @@ public class InstanceFactory {
         }
     }
 
-    private void generateWorlds(InstanceType type, Instance instance, boolean isSavable) {
+    private void generateWorlds(InstanceType type, Instance instance) {
         AtomicInteger i = new AtomicInteger();
-        int max = type.getWorlds().length;
-        for (String worldName : type.getWorlds()) {
-            instance.loadWorld(worldName, isSavable, (str) -> {
+        int max = type.getWorlds().size();
+        for (InstanceType.InstanciableWorld world : type.getWorlds()) {
+            instance.loadWorld(world.getWorldName(), world.isSavable(), (str) -> {
                 i.getAndIncrement();
                 if (i.get() == max) {
                     Bukkit.getScheduler().runTask(plugin, () -> {

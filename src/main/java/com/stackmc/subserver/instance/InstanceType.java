@@ -1,8 +1,11 @@
 package com.stackmc.subserver.instance;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 @Getter
@@ -12,9 +15,8 @@ public class InstanceType {
     private final boolean autoJoin; // Whether players will join this instance automatically on server join, can be set only once by server
     private final int maxPlayers; // The maximum amount of players that can join this instance, -1 for unlimited
     @Setter private int maxInstancesCount = 2; // The maximum amount of OPEN instances of this type that can run at the same time, max 10
-    @Setter private boolean savable = false;
 
-    private String[] worlds = new String[]{}; // The name of the worlds that are part of this instance
+    private final List<InstanciableWorld> worlds = new ArrayList<>(); // Worlds that are part of this instance
 
     @Setter
     private Consumer<Instance> postInitRunnable = (instance -> {}); // Executed after the instance has been initialized
@@ -25,8 +27,15 @@ public class InstanceType {
         this.maxPlayers = maxPlayers;
     }
 
-    public void setWorlds(String... worlds) {
-        this.worlds = worlds;
+    @Getter
+    @RequiredArgsConstructor
+    public static class InstanciableWorld {
+        private final String worldName;
+        private final boolean savable;
+    }
+
+    public void addWorld(String worldName, boolean savable) {
+        worlds.add(new InstanciableWorld(worldName, savable));
     }
 
 }

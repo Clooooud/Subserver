@@ -35,12 +35,12 @@ public class InstanceListener implements Listener {
                 .collect(Collectors.toList());
 
         if (autospawnTypes.isEmpty()) {
-            System.err.println("No instance type is set to auto-join.");
+            Bukkit.getLogger().severe("No instance type is set to auto-join.");
             return;
         }
 
         if (autospawnTypes.size() > 1) {
-            System.err.println("More than one instance type is set to auto-join.");
+            Bukkit.getLogger().severe("More than one instance type is set to auto-join.");
             return;
         }
 
@@ -51,7 +51,7 @@ public class InstanceListener implements Listener {
                 .orElse(null);
 
         if (instance == null) {
-            System.err.println("No instance are open for auto-join.");
+            Bukkit.getLogger().severe("No instance are open for auto-join.");
             event.getPlayer().kickPlayer("Server is full, sorry.");
             return;
         }
