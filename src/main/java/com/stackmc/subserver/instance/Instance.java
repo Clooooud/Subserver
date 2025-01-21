@@ -38,10 +38,17 @@ public class Instance {
     private final String name;
     private final SubServer plugin;
     private final InstanceType type;
-    private final List<World> worlds = new ArrayList<>();
+    private final List<InstanciableWorld> worlds = new ArrayList<>();
     private final Set<OfflinePlayer> offlinePlayers = new HashSet<>();
     private final UUID uniqueId = UUID.randomUUID();
     @Setter private InstanceState state = InstanceState.INIT;
+
+    @Getter
+    @RequiredArgsConstructor
+    public static class InstanciableWorld {
+        private final World world;
+        private final boolean savable;
+    }
 
     private final EventDispatcher eventDispatcher = new EventDispatcher();
 
@@ -70,8 +77,10 @@ public class Instance {
         });
 
         worlds.forEach(world -> {
-            Bukkit.unloadWorld(world, false);
-            SWMUtils.deleteWorld(world.getName());
+            Bukkit.unloadWorld(world.getWorld(), false);
+            if (!world.isSavable()) {
+                SWMUtils.deleteWorld(world.getWorld().getName());
+            }
         });
 
         worlds.clear();
@@ -116,15 +125,15 @@ public class Instance {
                 world = Bukkit.getWorld(destWorldName);
             } while (world == null); // I can do this because i'm in an async thread
 
-            this.addWorld(world);
+            this.addWorld(world, isSavable);
 
             long totalTime = System.currentTimeMillis() - startTime;
             finalCallback.accept("Monde " + destWorldName +  " chargé en " + totalTime + "ms ou " + ((float) totalTime / 50f) + " ticks .");
         });
     }
 
-    public void addWorld(World world) {
-        worlds.add(world);
+    public void addWorld(World world, boolean isSavable) {
+        worlds.add(new InstanciableWorld(world,isSavable));
     }
 
     public void joinInstance(Player player) {
@@ -135,7 +144,7 @@ public class Instance {
             target.showPlayer(plugin, player);
         });
         offlinePlayers.add(player);
-        player.teleport(worlds.get(0).getSpawnLocation());
+        player.teleport(worlds.get(0).getWorld().getSpawnLocation());
         //onJoinEvent(player);
     }
 
