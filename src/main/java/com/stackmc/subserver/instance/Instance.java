@@ -120,15 +120,16 @@ public class Instance {
         worlds.add(world);
     }
 
-    public void joinInstance(Player player) {
+    public void joinInstance(Player player, Optional<World> world) {
         Instance oldInstance = Instance.getInstance(player.getWorld());
-        if(oldInstance != null) oldInstance.quitInstance(player);
+        if (oldInstance != null) oldInstance.quitInstance(player);
         getPlayers().forEach(target -> {
             player.showPlayer(plugin, target);
             target.showPlayer(plugin, player);
         });
         offlinePlayers.add(player);
-        player.teleport(worlds.get(0).getSpawnLocation());
+        if (world.isPresent()) player.teleport(world.get().getSpawnLocation());
+        else player.teleport(worlds.get(0).getSpawnLocation());
         //onJoinEvent(player);
     }
 

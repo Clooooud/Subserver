@@ -11,6 +11,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class TpSubCommand implements TabExecutor {
 
         Player player = (Player) sender;
         Instance instance = Instance.getInstance(Bukkit.getWorld(args[0]));
-        instance.joinInstance(player);
+        instance.joinInstance(player, Optional.empty());
         return true;
     }
 

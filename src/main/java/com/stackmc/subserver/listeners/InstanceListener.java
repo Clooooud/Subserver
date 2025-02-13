@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class InstanceListener implements Listener {
@@ -58,7 +59,7 @@ public class InstanceListener implements Listener {
 
         instance.dispatchEvent(event);
         instance.sendMessage(event.getJoinMessage());
-        instance.joinInstance(event.getPlayer());
+        instance.joinInstance(event.getPlayer(), Optional.empty());
     }
 
     @EventHandler
