@@ -97,7 +97,7 @@ public class Instance {
 
             Bukkit.getScheduler().runTask(plugin, () -> {
                 try {
-                    SWMUtils.loadWorld(destWorldName);
+                    SWMUtils.loadWorld(destWorldName, plugin);
                 } catch (UnknownWorldException | IOException | CorruptedWorldException | NewerFormatException |
                          WorldLoadedException | WorldLockedException e) {
                     finalCallback.accept("§cUne erreur est survenue lors du chargement du monde.");
