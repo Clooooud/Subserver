@@ -12,6 +12,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -28,7 +30,12 @@ public class Instance {
     @Getter private static final Set<Instance> instances = new HashSet<>();
 
     public static Instance getInstance(World world) {
-        return instances.stream().filter(instance -> instance.getWorlds().contains(world)).findAny().orElse(null);
+        return instances.stream()
+                .filter(instance -> instance.getWorlds()
+                        .stream()
+                        .anyMatch(instanciableWorld -> instanciableWorld.getWorld().equals(world)))
+                .findAny()
+                .orElse(null);
     }
 
     public static Instance getInstance(String name) {
@@ -145,16 +152,20 @@ public class Instance {
         });
         offlinePlayers.add(player);
         player.teleport(worlds.get(0).getWorld().getSpawnLocation());
-        //onJoinEvent(player);
+
+        PlayerJoinEvent event = new PlayerJoinEvent(player," ");
+        this.dispatchEvent(event);
     }
 
     public void quitInstance(Player player) {
-        //onQuitEvent(player);
         getPlayers().forEach(target -> {
             player.hidePlayer(plugin, target);
             target.hidePlayer(plugin, player);
         });
         offlinePlayers.remove(player);
+
+        PlayerQuitEvent event = new PlayerQuitEvent(player," ");
+        this.dispatchEvent(event);
     }
 
     public void sendMessage(String message) {
