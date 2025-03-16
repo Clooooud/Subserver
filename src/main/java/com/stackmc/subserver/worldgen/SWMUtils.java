@@ -7,7 +7,6 @@ import com.infernalsuite.aswm.api.world.SlimeWorld;
 import com.infernalsuite.aswm.api.world.properties.SlimeProperties;
 import com.infernalsuite.aswm.api.world.properties.SlimePropertyMap;
 import com.stackmc.subserver.SubServer;
-import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,15 +69,8 @@ public class SWMUtils {
     }
 
     public static void loadWorld(String worldName, SubServer plugin) throws UnknownWorldException, IOException, CorruptedWorldException, NewerFormatException, WorldLoadedException, WorldLockedException {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable(){
-            @SneakyThrows
-            @Override
-            public void run() {
-                SlimeLoader loader = getSlimePlugin().getLoader("file");
-                slimeWorld = getSlimePlugin().loadWorld(loader, worldName, false, getDefaultProperties());
-            }
-
-        });
+        SlimeLoader loader = getSlimePlugin().getLoader("file");
+        slimeWorld = getSlimePlugin().loadWorld(loader, worldName, false, getDefaultProperties());
         getSlimePlugin().loadWorld(slimeWorld);
     }
 }
