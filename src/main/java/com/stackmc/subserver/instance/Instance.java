@@ -1,6 +1,8 @@
 package com.stackmc.subserver.instance;
 
-import com.infernalsuite.aswm.api.exceptions.*;
+import com.infernalsuite.asp.api.exceptions.*;
+import com.stackmc.subserver.Events.InstanceJoinEvent;
+import com.stackmc.subserver.Events.InstanceQuitEvent;
 import com.stackmc.subserver.SubServer;
 import com.stackmc.subserver.worldgen.SWMUtils;
 import lombok.Getter;
@@ -92,6 +94,7 @@ public class Instance {
 
         worlds.clear();
         offlinePlayers.clear();
+        instances.remove(this);
     }
 
     public void loadWorld(String worldName, boolean isSavable, @Nullable Consumer<String> callback) {
@@ -122,7 +125,7 @@ public class Instance {
                 try {
                     SWMUtils.loadWorld(destWorldName);
                 } catch (UnknownWorldException | IOException | CorruptedWorldException | NewerFormatException |
-                         WorldLoadedException | WorldLockedException e) {
+                         WorldLoadedException e) {
                     finalCallback.accept("§cUne erreur est survenue lors du chargement du monde.");
                 }
             });
@@ -153,8 +156,9 @@ public class Instance {
         offlinePlayers.add(player);
         player.teleport(worlds.get(0).getWorld().getSpawnLocation());
 
-        PlayerJoinEvent event = new PlayerJoinEvent(player," ");
-        this.dispatchEvent(event);
+        //PlayerJoinEvent event = new PlayerJoinEvent(player," ");
+        //this.dispatchEvent(event);
+        Bukkit.getPluginManager().callEvent(new InstanceJoinEvent(player,this));
     }
 
     public void quitInstance(Player player) {
@@ -164,8 +168,9 @@ public class Instance {
         });
         offlinePlayers.remove(player);
 
-        PlayerQuitEvent event = new PlayerQuitEvent(player," ");
-        this.dispatchEvent(event);
+        //PlayerQuitEvent event = new PlayerQuitEvent(player," ");
+        //this.dispatchEvent(event);
+        Bukkit.getPluginManager().callEvent(new InstanceQuitEvent(player,this));
     }
 
     public void sendMessage(String message) {
