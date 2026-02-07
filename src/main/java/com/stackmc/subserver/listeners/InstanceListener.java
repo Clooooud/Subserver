@@ -10,6 +10,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -102,5 +103,13 @@ public class InstanceListener implements Listener {
 
         event.setCancelled(true);
         instance.sendMessage(String.format(event.getFormat(), event.getPlayer().getDisplayName(), event.getMessage()));
+    }
+
+    @EventHandler
+    public void onRespawn(PlayerRespawnEvent event) {
+        Instance instance = Instance.getInstance(event.getPlayer().getWorld());
+        if (instance != null) {
+            event.setRespawnLocation(instance.getWorlds().get(0).getWorld().getSpawnLocation());
+        }
     }
 }
