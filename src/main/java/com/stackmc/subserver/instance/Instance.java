@@ -59,6 +59,13 @@ public class Instance {
         private final boolean savable;
     }
 
+    public InstanciableWorld getInstanciableWorld(String worldName) {
+        return worlds.stream()
+                .filter(instanciableWorld -> instanciableWorld.getWorld().getName().equals(worldName))
+                .findAny()
+                .orElse(null);
+    }
+
     private final EventDispatcher eventDispatcher = new EventDispatcher();
 
     public void register() {
