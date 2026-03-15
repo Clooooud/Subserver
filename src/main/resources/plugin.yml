@@ -1,7 +1,8 @@
 name: SubServer
 version: '${project.version}'
 main: com.stackmc.subserver.SubServer
-api-version: '1.20.6'
+api-version: '1.21.4'
+depend: [ASPaperPlugin]
 authors: [LoanSpac, Clooooud, Bloupyi]
 commands:
   subserver:
