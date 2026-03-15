@@ -162,9 +162,18 @@ public class Instance {
         });
         offlinePlayers.add(player);
         player.teleport(worlds.get(0).getWorld().getSpawnLocation());
+        Bukkit.getPluginManager().callEvent(new InstanceJoinEvent(player,this));
+    }
 
-        //PlayerJoinEvent event = new PlayerJoinEvent(player," ");
-        //this.dispatchEvent(event);
+    public void joinInstance(Player player, World world) {
+        Instance oldInstance = Instance.getInstance(player.getWorld());
+        if(oldInstance != null) oldInstance.quitInstance(player);
+        getPlayers().forEach(target -> {
+            player.showPlayer(plugin, target);
+            target.showPlayer(plugin, player);
+        });
+        offlinePlayers.add(player);
+        player.teleport(world.getSpawnLocation());
         Bukkit.getPluginManager().callEvent(new InstanceJoinEvent(player,this));
     }
 
