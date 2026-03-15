@@ -1,6 +1,9 @@
 package com.stackmc.subserver.instance;
 
-import com.infernalsuite.asp.api.exceptions.*;
+import com.infernalsuite.asp.api.exceptions.CorruptedWorldException;
+import com.infernalsuite.asp.api.exceptions.NewerFormatException;
+import com.infernalsuite.asp.api.exceptions.UnknownWorldException;
+import com.infernalsuite.asp.api.exceptions.WorldLoadedException;
 import com.stackmc.subserver.Events.InstanceJoinEvent;
 import com.stackmc.subserver.Events.InstanceQuitEvent;
 import com.stackmc.subserver.SubServer;
@@ -14,8 +17,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -165,6 +166,19 @@ public class Instance {
 
         //PlayerJoinEvent event = new PlayerJoinEvent(player," ");
         //this.dispatchEvent(event);
+        Bukkit.getPluginManager().callEvent(new InstanceJoinEvent(player,this));
+    }
+
+    public void joinInstance(Player player, World world) {
+        Instance oldInstance = Instance.getInstance(player.getWorld());
+        if(oldInstance != null) oldInstance.quitInstance(player);
+        getPlayers().forEach(target -> {
+            player.showPlayer(plugin, target);
+            target.showPlayer(plugin, player);
+        });
+        offlinePlayers.add(player);
+        player.teleport(getInstanciableWorld(world.getName()).getWorld().getSpawnLocation());
+
         Bukkit.getPluginManager().callEvent(new InstanceJoinEvent(player,this));
     }
 
