@@ -63,9 +63,9 @@ public class InstanceFactory {
 
     private void generateWorlds(InstanceType type, Instance instance) {
         AtomicInteger i = new AtomicInteger();
-        int max = type.getWorlds().length;
-        for (String worldName : type.getWorlds()) {
-            instance.loadWorld(worldName, (str) -> {
+        int max = type.getWorlds().size();
+        for (InstanceType.InstanciableWorld world : type.getWorlds()) {
+            instance.loadWorld(world.getWorldName(), world.isSavable(), (str) -> {
                 i.getAndIncrement();
                 if (i.get() == max) {
                     Bukkit.getScheduler().runTask(plugin, () -> {
