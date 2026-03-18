@@ -16,6 +16,7 @@ public class InstanceFactory {
 
     @Getter private final Set<InstanceType> instanceTypes = new HashSet<>();
     private final Map<InstanceType, Set<Instance>> instances = new HashMap<>();
+    @Getter public Instance autoJoinInstance = null;
 
     private BukkitTask task;
 
@@ -56,6 +57,7 @@ public class InstanceFactory {
                 generateWorlds(type, instance);
                 instance.register();
                 instances.add(instance);
+                if (type.isAutoJoin()) autoJoinInstance = instance;
             }
             this.instances.put(type, instances);
         }
