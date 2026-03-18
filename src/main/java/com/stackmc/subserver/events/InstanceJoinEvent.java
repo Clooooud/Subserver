@@ -1,4 +1,4 @@
-package com.stackmc.subserver.Events;
+package com.stackmc.subserver.events;
 
 import com.stackmc.subserver.instance.Instance;
 import lombok.Getter;

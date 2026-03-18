@@ -22,7 +22,6 @@ import org.bukkit.event.weather.WeatherEvent;
 import org.bukkit.event.world.WorldEvent;
 import org.reflections.Reflections;
 
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -55,9 +54,16 @@ public class EventListener implements Listener {
                 continue;
             }
 
-            if (Modifier.isAbstract(eventClass.getModifiers())) { // If the class is abstract, skip it
+            try {
+                eventClass.getDeclaredField("handlers"); // If the class declares handlers, then it should be registered
+            } catch (NoSuchFieldException e) {
+                // No handlers
+                System.out.println("Skipped: " + eventClass.getName());
                 continue;
             }
+
+            System.out.println("Registered: " + eventClass.getName());
+
             // Register the event
             Bukkit.getPluginManager().registerEvent(eventClass, this, EventPriority.MONITOR, (listener, event) -> onEvent(event), this.plugin);
         }
