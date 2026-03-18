@@ -1,8 +1,8 @@
 package com.stackmc.subserver.instance;
 
 import com.infernalsuite.asp.api.exceptions.*;
-import com.stackmc.subserver.Events.InstanceJoinEvent;
-import com.stackmc.subserver.Events.InstanceQuitEvent;
+import com.stackmc.subserver.events.InstanceJoinEvent;
+import com.stackmc.subserver.events.InstanceQuitEvent;
 import com.stackmc.subserver.SubServer;
 import com.stackmc.subserver.worldgen.SWMUtils;
 import lombok.Getter;
@@ -14,8 +14,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
