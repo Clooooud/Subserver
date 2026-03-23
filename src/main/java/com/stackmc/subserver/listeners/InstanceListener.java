@@ -58,7 +58,7 @@ public class InstanceListener implements Listener {
         }
 
         instance.dispatchEvent(event);
-        instance.sendMessage(event.getJoinMessage());
+        event.setJoinMessage(event.getJoinMessage());
         instance.joinInstance(event.getPlayer());
     }
 
